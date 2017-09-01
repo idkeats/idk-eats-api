@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import * as _ from 'lodash';
 import mongoose from 'mongoose';
 
 const secret = process.env.SECRET;
@@ -13,9 +12,7 @@ const User = mongoose.model('User');
  * @returns
  */
 function sign(payload, options) {
-    // const jwtOptions = _.extend(jwtDefaults, options || {});
-    const jwtToken = jwt.sign(payload, secret, options);
-    return jwtToken;
+    return jwt.sign(payload, secret, options);
 }
 
 /**
@@ -49,7 +46,6 @@ async function protect(req, res, next) {
         
         req.current_user = await User.findOne({ _id: user._id })
             .select('-password -__v');
-        // .populate([{ path: "role", model: "Role" }, { path: "provider", model: "Provider" }]);
         
         next();
     }

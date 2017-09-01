@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
@@ -8,9 +7,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const db = require('./models/index');
-import routes from './routes/index';
 const app = express();
 const secret = process.env.SECRET;
+import routes from './routes/index';
 
 db.init();
 
@@ -27,13 +26,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  try {
-    jwt.verify(req.headers['authorization'], secret);
-    next();
-  } catch (err) {
-    err.status = 401;
-    next(err);
-  }
+  const protect = require('./modules/jwt').protect;
+  if(req.path === '/api/v1/auth') next();
+  else protect(req, res, next);
 });
 routes(app);
 
