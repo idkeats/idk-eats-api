@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
@@ -7,9 +8,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const db = require('./models/index');
-// const routes = require('./routes/index');
 import routes from './routes/index';
 const app = express();
+const secret = process.env.SECRET;
 
 db.init();
 
@@ -25,17 +26,26 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+  try {
+    jwt.verify(req.headers['authorization'], secret);
+    next();
+  } catch (err) {
+    err.status = 401;
+    next(err);
+  }
+});
 routes(app);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

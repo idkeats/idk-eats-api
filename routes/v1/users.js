@@ -1,4 +1,5 @@
 import Router from 'express';
+import * as jwt from '../../modules/jwt';
 const router = Router();
 
 import * as UserController from '../../controllers/user';
