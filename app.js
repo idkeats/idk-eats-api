@@ -28,9 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   const protect = require('./modules/jwt').protect;
   if(req.path === '/auth') next();
-  else {
-    protect(req, res, next);
-  }
+  else protect(req, res, next);
 });
 routes(app);
 
