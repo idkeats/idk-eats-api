@@ -9,7 +9,6 @@ const cors = require('cors');
 const db = require('./models/index');
 const app = express();
 const secret = process.env.SECRET;
-import jwt from 'jsonwebtoken';
 import routes from './routes/index';
 
 db.init();
@@ -27,10 +26,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
+  const protect = require('./modules/jwt').protect;
   if(req.path === '/auth') next();
   else {
-    const jwt = require('./modules/jwt');
-    jwt.protect(req, res, next);
+    protect(req, res, next);
   }
 });
 routes(app);
