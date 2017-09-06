@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import * as _ from 'lodash';
+import rando from 'randomatic';
+import bcrypt from 'bcrypt';
 
 const User = mongoose.model('User');
 
@@ -12,9 +14,16 @@ module.exports = {
 
     createUser: (req, res) => {
         const newUser = new User(req.body);
-        newUser.save()
-            .then((user) => res.status(200).json(user))
-            .catch((error) => res.status(400).json(error));
+
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(req.body.password, salt, (err, hash) => {
+                newUser.password = hash;
+
+                newUser.save()
+                    .then((user) => res.status(200).json(_.omit(user.toJSON(), 'password', '__v')))
+                    .catch((error) => res.status(400).json(error));
+            });
+        });
     },
 
     getUser: (req, res) => {
