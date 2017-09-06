@@ -4,6 +4,9 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const db = require('./models/index');
@@ -25,9 +28,27 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(passport.initialize());
+passport.use(new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password'
+}, async (email, password, done) => {
+  const User = mongoose.model('User');
+
+  let user = await User.findOne({email: email});
+
+  if (!user) return done(null, false, {message: 'Wrong user bro'});
+
+  bcrypt.compare(password, user.password, (err, result) => {
+    if(err) return done(null, false, {message: 'Wrong password bro'});
+    return done(null, user);
+  });
+  
+}));
+
 app.use((req, res, next) => {
   const protect = require('./modules/jwt').protect;
-  if(req.path === '/api/v1/auth') next();
+  if(req.path === '/api/v1/auth/login') next();
   else protect(req, res, next);
 });
 routes(app);
