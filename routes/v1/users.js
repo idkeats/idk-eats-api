@@ -13,4 +13,7 @@ router.route('/:id')
     .put(UserController.updateUser)
     .delete(UserController.deleteUser);
 
+router.route('/update/updateAllDev')
+    .get(UserController.updateAllUsersForDev);
+
 export default router;
