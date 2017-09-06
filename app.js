@@ -28,6 +28,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.options('*', cors());
+const corsHostnameWhiteList = [/https:\/\/s3\.amazonaws\.com\/idk-eats\.com\/index\.html/, /http:\/\/localhost(?::\d{1,5})?$/];
+app.use(cors({origin: corsHostnameWhiteList}));
+
 app.use(passport.initialize());
 passport.use(new LocalStrategy({
   usernameField: 'email',

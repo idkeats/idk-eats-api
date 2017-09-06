@@ -56,5 +56,24 @@ module.exports = {
                     .catch((error) => res.status(500).json(error));
             })
             .catch((error) => res.status(404).json(error));
+    },
+
+    updateAllUsersForDev: (req, res) => {
+        if (process.env.NODE_ENV === 'development') {
+            User.find({})
+                .then((users) => {
+                    users.forEach((user) => {
+                        if (!user.password) {
+                            bcrypt.genSalt(10, (err, salt) => {
+                                bcrypt.hash(rando('*', 15), salt, (err, hash) => {
+                                    user.password = hash;
+                                    user.save();
+                                });
+                            });
+                        }
+                    });
+                    res.status(200).json({message: 'Successful Update'});
+                });
+        } else res.status(404).json({message: 'Invalid endpoint'});
     }
 }
