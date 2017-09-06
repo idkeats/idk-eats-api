@@ -16,7 +16,6 @@ const UserSchema = new mongoose.Schema({
     },
     isActive: {
         type: Boolean,
-        required: true,
         default: true
     },
     message: String
