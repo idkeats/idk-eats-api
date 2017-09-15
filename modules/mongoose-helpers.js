@@ -43,6 +43,7 @@ const remove = async (model, conditions, next) => {
 
 module.exports = {
   find,
+  findOne,
   save,
   remove
 }
