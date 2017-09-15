@@ -35,7 +35,7 @@ module.exports = {
     },
 
     getUserPreferences: (req, res, next) => {
-        helper.find(Preference, {query: {user_id: req.params.userId}}, next)
+        helper.find(Preference, {query: {user_id: req.params.userId}, select: '-__v'}, next)
             .then((preferences) => res.status(200).json(preferences));
     }
 }
