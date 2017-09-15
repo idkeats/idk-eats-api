@@ -6,22 +6,49 @@
 const envFile = require('../.env');
 const dotEnv = require('dotenv').load(envFile);
 require('babel-register');
-var app = require('../app');
-var debug = require('debug')('api:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('api:server');
+const http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
+
+const io = require('socket.io');
+const sio_server = io(server);
+
+sio_server.on('connection', socket => {
+  
+  socket.on('joinRoom', (roomId) => {
+    socket.join('room' + roomId);
+  });
+
+  socket.on('sendMessage', (messageObj) => {
+    sio_server.in('room' + messageObj.roomId).emit('updateMessages', messageObj.message, messageObj.user);
+  });
+
+  socket.on('sendRequest', (requestObj) => {
+    sio_server.in('room' + requestObj.roomId).emit('updateRequests', requestObj.requestId, requestObj.requestFrom, requestObj.user);
+  });
+
+  socket.on('accepted', (id) => {
+    sio_server.sockets.emit('acceptedRequest', id);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Disconnected from socket');
+  });
+});
+
 
 /**
  * Listen on provided port, on all network interfaces.
