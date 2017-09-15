@@ -32,10 +32,5 @@ module.exports = {
     deletePreference: (req, res, next) => {
         helper.remove(Preference, {query: {_id: req.params.id}}, next)
             .then((resp) => res.status(200).json({message: 'Successful Delete'}));
-    },
-
-    getUserPreferences: (req, res, next) => {
-        helper.find(Preference, {query: {user_id: req.params.userId}, select: '-__v'}, next)
-            .then((preferences) => res.status(200).json(preferences));
     }
 }

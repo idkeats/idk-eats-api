@@ -12,7 +12,4 @@ router.route('/:id')
     .put(PreferenceController.updatePreference)
     .delete(PreferenceController.deletePreference);
 
-router.route('/user/:userId')
-    .get(PreferenceController.getUserPreferences);
-
 export default router;

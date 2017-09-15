@@ -18,7 +18,11 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    message: String
+    message: String,
+    preferences: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Preference'
+    }]
 });
 
 mongoose.model('User', UserSchema);
