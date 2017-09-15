@@ -12,6 +12,17 @@ const find = async (model, conditions, next) => {
   }
 }
 
+const findOne = async (model, conditions, next) => {
+  try {
+    const result = await model.findOne(conditions.query)
+      .populate(conditions.populate ? conditions.populate : '')
+      .select(conditions.select ? conditions.select : '');
+    return result;
+  } catch (err) {
+    next(err);
+  }
+}
+
 const save = async (model, next) => {
   try {
     const result = await model.save();

@@ -6,7 +6,7 @@ const Preference = mongoose.model('Preference');
 
 module.exports = {
     getAllPreferences: (req, res, next) => {
-        helper.find(Preference, {select: '-__v'}, null)
+        helper.find(Preference, {select: '-__v'}, next)
             .then((preferences) => res.status(200).json(preferences));
     },
 
@@ -16,15 +16,15 @@ module.exports = {
     },
 
     getPreference: (req, res, next) => {
-        helper.find(Preference, {query: {_id: req.params.id}, select: '-__v', limit: 1}, next)
-            .then((preferences) => res.status(200).json(preferences[0]));
+        helper.findOne(Preference, {query: {_id: req.params.id}, select: '-__v'}, next)
+            .then((preference) => res.status(200).json(preference));
     },
 
     updatePreference: (req, res, next) => {
-        helper.find(Preference, {query: {_id: req.params.id}, select: '-__v', limit: 1}, next)
-            .then((preferences) => {
-                _.merge(preferences[0], req.body);
-                helper.save(preferences[0], next)
+        helper.findOne(Preference, {query: {_id: req.params.id}, select: '-__v'}, next)
+            .then((preference) => {
+                _.merge(preference, req.body);
+                helper.save(preference, next)
                     .then((updatedPreference) => res.status(200).json(updatedPreference));
             });
     },
