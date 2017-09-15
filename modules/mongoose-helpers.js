@@ -1,19 +1,24 @@
 import mongoose from 'mongoose';
 
-const find = async (model, query, next) => {
+const find = async (model, conditions, next) => {
   try {
-    const result = await model.find(query);
+    const result = await model.find(conditions.query)
+      .populate(conditions.populate ? conditions.populate : '')
+      .select(conditions.select ? conditions.select : '')
+      .limit(conditions.limit ? conditions.limit : '');
     return result;
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 };
 
-const findOne = async (model, query, next) => {
+const findOne = async (model, conditions, next) => {
   try {
-    const result = await model.findOne(query);
+    const result = await model.findOne(conditions.query)
+      .populate(conditions.populate ? conditions.populate : '')
+      .select(conditions.select ? conditions.select : '');
     return result;
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 }
@@ -22,7 +27,7 @@ const save = async (model, next) => {
   try {
     const result = await model.save();
     return result;
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 }
