@@ -27,14 +27,14 @@ module.exports = {
 
     getUser: (req, res, next) => {
         helper.find(User, {query: {_id: req.params.id, isActive: true}, select: '-password -__v', limit: 1}, next)
-            .then((data) => res.status(200).json(data[0]));
+            .then((users) => res.status(200).json(users[0]));
     },
 
     updateUser: (req, res, next) => {
         helper.find(User, {query: {_id: req.params.id}, select: '-password -__v', limit: 1}, next)
-            .then((user) => {
-                _.merge(user[0], req.body);                
-                helper.save(user[0], next)
+            .then((users) => {
+                _.merge(users[0], req.body);                
+                helper.save(users[0], next)
                     .then((updatedUser) => res.status(200).json(updatedUser));
             });
     },
