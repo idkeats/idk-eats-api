@@ -26,24 +26,24 @@ module.exports = {
     },
 
     getUser: (req, res, next) => {
-        helper.find(User, {query: {_id: req.params.id, isActive: true}, select: '-password -__v', limit: 1}, next)
-            .then((data) => res.status(200).json(data[0]));
+        helper.findOne(User, {query: {_id: req.params.id, isActive: true}, select: '-password -__v'}, next)
+            .then((user) => res.status(200).json(user));
     },
 
     updateUser: (req, res, next) => {
-        helper.find(User, {query: {_id: req.params.id}, select: '-password -__v', limit: 1}, next)
+        helper.findOne(User, {query: {_id: req.params.id}, select: '-password -__v'}, next)
             .then((user) => {
-                _.merge(user[0], req.body);                
-                helper.save(user[0], next)
+                _.merge(user, req.body);                
+                helper.save(user, next)
                     .then((updatedUser) => res.status(200).json(updatedUser));
             });
     },
 
     deleteUser: (req, res, next) => {
-        helper.find(User, {query: {_id: req.params.id}, select: '-password -__v', limit: 1}, next)
+        helper.findOne(User, {query: {_id: req.params.id}, select: '-password -__v'}, next)
             .then((user) => {
-                user[0].isActive = false;
-                helper.save(user[0])
+                user.isActive = false;
+                helper.save(user)
                     .then((updatedUser) => res.status(200).json(updatedUser));
             });
     },

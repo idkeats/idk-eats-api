@@ -10,7 +10,7 @@ const find = async (model, conditions, next) => {
   } catch (err) {
     next(err);
   }
-};
+}
 
 const findOne = async (model, conditions, next) => {
   try {
@@ -32,8 +32,18 @@ const save = async (model, next) => {
   }
 }
 
+const remove = async (model, conditions, next) => {
+  try {
+    const result = await model.remove(conditions.query);
+    return result;
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   find,
   findOne,
-  save
+  save,
+  remove
 }
